@@ -40,15 +40,20 @@ const revealPosition = async function() {
 revealPosition();
 
 const parallelAPI = async function() {
-  const position = await getPosition();
-    const { latitude: lat, longitude:lng } = position.coords;
+  try 
+  {const position = await getPosition();
+  const { latitude: lat, longitude:lng } = position.coords;
   const resArr = await Promise.all([
     getJSON(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`),
     getJSON(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`)
   ]);
-  
+
   console.log(resArr[0].address.country);
   console.log(resArr[1].countryName);
+  
+  }catch(err) {
+    errorHandler(err);
+  }
 }
 
 parallelAPI();
